@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Avery's Puffer Adventure 🐡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ocean-top:#06314f; --ocean-mid:#0a6aa1; --ocean-bot:#2bb6cf;
+    --ink:#0a3550;
+    --pink:#ff6b9d; --sun:#ffd23f; --mint:#3ddc97; --sky:#5ec6ff;
+    --coral:#ff8a5c; --grape:#9b7bff;
+    --panel:#ffffff;
+    --font:'Fredoka','Comic Sans MS','Trebuchet MS',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; font-family:var(--font); color:var(--ink);
+    background:linear-gradient(180deg,var(--ocean-top) 0%,var(--ocean-mid) 45%,var(--ocean-bot) 100%);
+    background-attachment:fixed; min-height:100vh; overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- floating background: light rays + bubbles ---------- */
+  .rays{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .ray{position:absolute;top:-30%;width:14vw;height:160vh;
+    background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0));
+    transform:rotate(12deg);filter:blur(6px);animation:sway 9s ease-in-out infinite}
+  .ray:nth-child(1){left:8%}
+  .ray:nth-child(2){left:42%;animation-delay:-3s;width:10vw}
+  .ray:nth-child(3){left:73%;animation-delay:-6s;width:18vw}
+  @keyframes sway{0%,100%{transform:rotate(12deg) translateX(0)}50%{transform:rotate(12deg) translateX(40px)}}
+  #bubbles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .bubble{position:absolute;bottom:-60px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.9),rgba(255,255,255,.12) 60%,rgba(255,255,255,0));
+    box-shadow:inset 0 0 6px rgba(255,255,255,.6);animation:rise linear infinite}
+  @keyframes rise{0%{transform:translateY(0) translateX(0);opacity:0}
+    10%{opacity:.8}90%{opacity:.7}100%{transform:translateY(-112vh) translateX(40px);opacity:0}}
+
+  .wrap{position:relative;z-index:2;max-width:980px;margin:0 auto;padding:0 18px 70px}
+
+  /* ---------- hero ---------- */
+  header.hero{position:relative;z-index:2;text-align:center;padding:46px 18px 14px}
+  .eyebrow{display:inline-block;background:var(--sun);color:#7a4a00;font-weight:600;
+    padding:7px 18px;border-radius:999px;letter-spacing:.04em;font-size:clamp(.8rem,2vw,1rem);
+    box-shadow:0 5px 0 #e0a800, 0 9px 18px rgba(0,0,0,.18);transform:rotate(-2deg)}
+  h1.title{margin:18px 0 6px;font-size:clamp(2.4rem,7vw,4.4rem);line-height:1.02;font-weight:700;
+    color:#fff;text-shadow:0 3px 0 #0a4d77,0 6px 22px rgba(0,0,0,.35)}
+  h1.title .rainbow{background:linear-gradient(90deg,var(--pink),var(--sun),var(--mint),var(--sky),var(--grape));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 2px 0 rgba(255,255,255,.35))}
+  .hero p.sub{color:#eafaff;font-size:clamp(1.05rem,2.6vw,1.45rem);max-width:620px;margin:8px auto 0;font-weight:400}
+
+  /* big floating hero puffer in a porthole */
+  .porthole{position:relative;border-radius:50%;overflow:hidden;
+    border:10px solid #fff;box-shadow:0 0 0 8px rgba(255,255,255,.25),0 22px 40px rgba(0,0,0,.35);
+    background:#0a6aa1}
+  .porthole::after{content:"";position:absolute;inset:0;border-radius:50%;
+    background:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,0) 42%);pointer-events:none}
+  .porthole img{display:block;width:100%;height:100%;object-fit:cover}
+  .hero-port{width:min(330px,72vw);aspect-ratio:1;margin:26px auto 6px;animation:floaty 4s ease-in-out infinite;cursor:pointer}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  .tap-hint{color:#eafaff;font-size:.95rem;opacity:.92;margin-top:2px}
+  .tap-hint b{color:var(--sun)}
+
+  /* speech bubble */
+  .speech{position:relative;display:inline-block;max-width:520px;margin:14px auto 0;
+    background:#fff;color:var(--ink);padding:14px 22px;border-radius:22px;font-weight:500;
+    font-size:clamp(1rem,2.4vw,1.25rem);box-shadow:0 10px 24px rgba(0,0,0,.22);min-height:1em}
+  .speech::after{content:"";position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+    border:9px solid transparent;border-bottom-color:#fff}
+
+  /* ---------- wave divider ---------- */
+  .wave{display:block;width:100%;height:60px;position:relative;z-index:2;margin-top:8px}
+
+  /* ---------- section panels ---------- */
+  section.card{background:var(--panel);border-radius:30px;padding:26px clamp(20px,4vw,40px);
+    margin:26px 0;box-shadow:0 16px 36px rgba(3,30,55,.30);position:relative}
+  .ribbon{display:inline-flex;align-items:center;gap:12px;font-weight:700;
+    font-size:clamp(1.4rem,4vw,2.1rem);color:#fff;padding:10px 22px;border-radius:999px;
+    box-shadow:0 7px 0 rgba(0,0,0,.10);margin:-46px 0 6px;line-height:1}
+  .ribbon .ico{font-size:1.3em;filter:drop-shadow(0 2px 1px rgba(0,0,0,.2))}
+  .c-pink{background:var(--pink)} .c-sky{background:var(--sky)} .c-coral{background:var(--coral)}
+  .c-mint{background:var(--mint)} .c-grape{background:var(--grape)} .c-sun{background:#f5b53d}
+  section.card p{font-size:clamp(1.05rem,2.4vw,1.25rem);line-height:1.55;font-weight:400;margin:.5em 0}
+  .big{font-weight:600}
+  .grid{display:flex;flex-wrap:wrap;gap:22px;align-items:center;margin-top:6px}
+  .grid .col{flex:1 1 240px;min-width:220px}
+  .photo{border-radius:22px;overflow:hidden;box-shadow:0 12px 26px rgba(3,30,55,.28);
+    border:5px solid #fff;aspect-ratio:4/3;background:#0a6aa1}
+  .photo img{display:block;width:100%;height:100%;object-fit:cover}
+  .cap{font-size:.92rem;color:#5b7184;text-align:center;margin-top:7px;font-weight:500}
+  .crew{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+  .crewcard{flex:1 1 210px;min-width:185px;background:#f4fbff;border-radius:18px;padding:14px 16px;box-shadow:inset 0 0 0 2px #dcefff}
+  .crewcard .ce{font-size:2rem;display:block;line-height:1.1}
+  .crewcard b{display:block;color:#0a5a86;font-size:1.08rem;margin:4px 0 3px}
+  .crewcard .d{font-size:.97rem;color:#3a586b;font-weight:400;line-height:1.42}
+  .bridge{background:#fff0f6;border:2px dashed #ff9ec4;border-radius:18px;padding:14px 18px;margin-top:16px;
+    font-size:clamp(1.02rem,2.4vw,1.2rem);color:#b03a6e;font-weight:500;line-height:1.5}
+
+  .factbubbles{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  .fb{background:#eaf7ff;color:#0a5a86;border-radius:999px;padding:9px 16px;font-weight:600;
+    font-size:clamp(.95rem,2.2vw,1.08rem);box-shadow:inset 0 0 0 2px #cdeafd}
+
+  /* ---------- temperature game ---------- */
+  .temp-wrap{display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:center;margin-top:8px}
+  .temp-face{width:min(230px,60vw);aspect-ratio:1}
+  .temp-face .porthole{width:100%;height:100%;transition:border-color .25s,box-shadow .25s}
+  .temp-badge{position:absolute;right:-6px;top:-6px;font-size:2.2rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+  .temp-controls{flex:1 1 320px;min-width:280px}
+  .tempnum{font-size:clamp(2.2rem,7vw,3.2rem);font-weight:700;text-align:center;margin:0}
+  .tempmsg{text-align:center;font-weight:600;font-size:clamp(1.05rem,2.6vw,1.3rem);min-height:2.4em;margin:4px 0 12px}
+  input[type=range].temp{-webkit-appearance:none;appearance:none;width:100%;height:22px;border-radius:999px;
+    background:linear-gradient(90deg,#5ec6ff 0%,#5ec6ff 30%,#3ddc97 30%,#3ddc97 62%,#ffb24d 62%,#ff5a5a 100%);
+    outline:none;cursor:pointer}
+  input[type=range].temp::-webkit-slider-thumb{-webkit-appearance:none;width:40px;height:40px;border-radius:50%;
+    background:#fff;border:5px solid var(--sky);box-shadow:0 4px 10px rgba(0,0,0,.3);cursor:grab}
+  input[type=range].temp::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;
+    border:5px solid var(--sky);box-shadow:0 4px 10px rgba(0,0,0,.3);cursor:grab}
+  .scale{display:flex;justify-content:space-between;color:#5b7184;font-weight:600;font-size:.9rem;margin-top:8px}
+  .grownup{background:#fff7e6;border:2px dashed #f0c45a;border-radius:16px;padding:10px 16px;margin-top:16px;
+    font-size:.98rem;color:#7a5a10;font-weight:500}
+  .grownup b{color:#a06a00}
+
+  /* ---------- feeding game ---------- */
+  .foods{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:14px 0}
+  .food{font-family:var(--font);border:none;cursor:pointer;background:#eaf7ff;border-radius:22px;
+    padding:14px 10px;width:120px;box-shadow:0 6px 0 #c7e6fb;transition:transform .08s,box-shadow .08s;
+    display:flex;flex-direction:column;align-items:center;gap:6px}
+  .food .e{font-size:2.6rem;line-height:1}
+  .food .n{font-weight:600;color:#0a5a86;font-size:1rem}
+  .food:hover{transform:translateY(-3px)}
+  .food:active{transform:translateY(3px);box-shadow:0 2px 0 #c7e6fb}
+  .feedback{text-align:center;font-weight:700;font-size:clamp(1.1rem,3vw,1.5rem);min-height:1.6em;margin-top:6px}
+
+  /* ---------- mini-game ---------- */
+  .game-hud{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:600;color:#0a5a86;
+    font-size:clamp(1rem,2.6vw,1.2rem);margin:6px 2px 8px}
+  .game{position:relative;width:100%;max-width:460px;margin:0 auto;aspect-ratio:3/4;
+    background:linear-gradient(180deg,#0a6aa1 0%,#16a0c8 100%);border-radius:22px;overflow:hidden;
+    border:5px solid #fff;box-shadow:0 12px 26px rgba(3,30,55,.28);touch-action:none;user-select:none;cursor:crosshair}
+  .g-food{position:absolute;font-size:34px;line-height:1;pointer-events:none;will-change:top}
+  .g-puffer{position:absolute;bottom:8px;left:50%;width:62px;height:62px;border-radius:50%;overflow:hidden;
+    border:4px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.3);transform:translateX(-50%);pointer-events:none}
+  .g-puffer img{width:100%;height:100%;object-fit:cover;display:block}
+  .g-overlay{position:absolute;inset:0;background:rgba(3,30,55,.55);display:flex;align-items:center;justify-content:center;text-align:center;padding:14px}
+  .g-overlay.hide{display:none}
+  .g-card{background:#fff;border-radius:20px;padding:22px 26px;max-width:84%;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+  .g-title{font-weight:700;font-size:clamp(1.3rem,4vw,1.8rem);color:var(--pink)}
+  .g-msg{margin:8px 0 14px;font-weight:500;color:var(--ink);font-size:clamp(1rem,2.6vw,1.15rem)}
+  .g-btn{font-family:var(--font);cursor:pointer;border:none;background:var(--mint);color:#fff;font-weight:700;
+    font-size:1.2rem;padding:12px 28px;border-radius:999px;box-shadow:0 6px 0 #25b07a;transition:transform .08s,box-shadow .08s}
+  .g-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #25b07a}
+
+  /* ---------- checklist ---------- */
+  .meter{height:26px;border-radius:999px;background:#e7eef3;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.12);margin:6px 0 4px}
+  .meter > i{display:block;height:100%;width:0;border-radius:999px;
+    background:linear-gradient(90deg,var(--pink),var(--sun),var(--mint),var(--sky));transition:width .5s cubic-bezier(.2,.9,.3,1.2)}
+  .meterlabel{text-align:center;font-weight:600;color:#0a5a86;margin-bottom:10px}
+  ul.check{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:10px}
+  ul.check li{display:flex;align-items:center;gap:14px;background:#f4fbff;border-radius:18px;padding:12px 16px;
+    cursor:pointer;box-shadow:inset 0 0 0 2px #dcefff;transition:background .2s,transform .08s;font-weight:500;
+    font-size:clamp(1rem,2.4vw,1.18rem)}
+  ul.check li:hover{background:#eaf7ff}
+  ul.check li:active{transform:scale(.99)}
+  ul.check li .star{font-size:1.7rem;width:1.5em;text-align:center;filter:grayscale(1) opacity(.45);transition:filter .2s,transform .3s}
+  ul.check li .em{font-size:1.5rem}
+  ul.check li.done{background:#eafff4;box-shadow:inset 0 0 0 2px #b8f0d4}
+  ul.check li.done .star{filter:none;transform:scale(1.18) rotate(8deg)}
+  ul.check li.done .txt{color:#1f9e63;text-decoration:line-through;text-decoration-thickness:2px}
+  .celebrate{text-align:center;font-weight:700;color:var(--pink);font-size:clamp(1.2rem,3.4vw,1.7rem);
+    margin-top:14px;min-height:1.2em}
+
+  /* ---------- footer ---------- */
+  footer{position:relative;z-index:2;text-align:center;color:#eafaff;padding:20px 18px 40px;font-weight:500}
+  footer a{color:#fff}
+  footer .heart{font-size:1.4rem}
+
+  /* ---------- sparkles ---------- */
+  #sparkle-layer{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+  .spark{position:absolute;font-size:18px;will-change:transform,opacity;animation:sparkpop .9s ease-out forwards}
+  @keyframes sparkpop{0%{transform:translate(0,0) scale(.3) rotate(0);opacity:1}
+    100%{transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(var(--dr));opacity:0}}
+  @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+  .wiggle{animation:wiggle .5s ease-in-out}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}60%{transform:translateX(8px)}}
+  .shake{animation:shake .4s ease-in-out}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="rays"><div class="ray"></div><div class="ray"></div><div class="ray"></div></div>
+<div id="bubbles"></div>
+<div id="sparkle-layer"></div>
+
+<header class="hero">
+  <span class="eyebrow">✨ A magical project for Avery ✨</span>
+  <h1 class="title">Avery's <span class="rainbow">Puffer</span> Adventure</h1>
+  <p class="sub">Let's set up a cosy, magical home for the tiniest pufferfish in the whole wide world! 🐡💙</p>
+  <div class="porthole hero-port" id="heroPuffer" title="Tap me!" tabindex="0" role="button" aria-label="Tap the puffer for a fun fact">
+    <img src="images/puffer-hero.jpg" alt="A tiny pea pufferfish swimming">
+  </div>
+  <div class="tap-hint">👆 <b>Tap the puffer</b> to hear a secret!</div>
+  <div class="speech" id="heroSpeech">Hi Avery! I'm a Pea Puffer. Tap me again and again! 🫧</div>
+</header>
+
+<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path fill="#ffffff" d="M0,30 C240,60 480,0 720,20 C960,40 1200,60 1440,28 L1440,60 L0,60 Z"></path>
+</svg>
+
+<div class="wrap">
+
+  <!-- 0. AVERY'S CURRENT TANK (personalised) -->
+  <section class="card">
+    <span class="ribbon c-sun"><span class="ico">🏠</span> Avery's Fish Family</span>
+    <p class="big">Before we meet the puffers… here's <b>YOUR</b> tank right now! 🐠💕</p>
+    <div class="photo" style="aspect-ratio:16/10"><img src="images/our-tank-fish.jpg" alt="Avery's aquarium with glowing tetras, plants and rainbow pebbles"></div>
+    <div class="cap">Your very own tank, here in Singapore 🌈</div>
+    <p style="margin-top:14px">Look who lives here with you:</p>
+    <div class="crew">
+      <div class="crewcard"><span class="ce">🌈</span><b>8 GloFish Tetras</b><span class="d">Your glowing rainbow zoomers — blue, pink, green &amp; yellow. Fast, and ALWAYS hungry!</span></div>
+      <div class="crewcard"><span class="ce">🐌</span><b>4 Little Snails</b><span class="d">Your algae clean-up crew — always munching to keep the glass sparkly!</span></div>
+      <div class="crewcard"><span class="ce">🟢</span><b>4 Marimo Moss Balls</b><span class="d">Fuzzy green moss-ball "pets" that slowly roll around. So squishy!</span></div>
+    </div>
+    <div class="grid" style="margin-top:6px">
+      <div class="col"><div class="photo"><img src="images/our-tank-moss.jpg" alt="Marimo moss balls on colourful pebbles"></div><div class="cap">Fuzzy marimo moss balls 🟢</div></div>
+      <div class="col"><div class="photo"><img src="images/our-tank-fern.jpg" alt="A Java fern plant growing on driftwood"></div><div class="cap">Your big leafy Java fern 🌿</div></div>
+    </div>
+    <div class="bridge">💙 Big news! Your <b>GloFish friends are moving to a wonderful new home</b> with lots more room to zoom. Then we'll turn <b>this very tank</b> into a magical castle — just for <b>4 little pea puffers</b>! 🏰🐡</div>
+  </section>
+
+  <!-- 1. MEET -->
+  <section class="card">
+    <span class="ribbon c-pink"><span class="ico">🐡</span> Meet your Pea Puffer</span>
+    <div class="grid">
+      <div class="col">
+        <p class="big">This little fish is called a <b>Pea Puffer</b> — because it's almost as tiny as a pea!</p>
+        <p>It's the smallest pufferfish in the world. It has wiggly fins, a round tummy, and a HUGE personality. 💛</p>
+        <div class="factbubbles">
+          <span class="fb">🤏 As tiny as your thumbnail</span>
+          <span class="fb">👀 Each eye moves on its own</span>
+          <span class="fb">🌏 From rivers far away in India</span>
+        </div>
+      </div>
+      <div class="col">
+        <div class="photo"><img src="images/puffer-face.jpg" alt="A pea puffer looking at the camera"></div>
+        <div class="cap">Hello there! 👋</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. TANK -->
+  <section class="card">
+    <span class="ribbon c-sky"><span class="ico">🏰</span> A Water Castle to Live In</span>
+    <div class="grid">
+      <div class="col">
+        <div class="photo"><img src="images/tank-setup.jpg" alt="People setting up a big planted aquarium"></div>
+        <div class="cap">Building a puffer castle 🛠️</div>
+      </div>
+      <div class="col">
+        <p>Once the GloFish have moved to their new home, we'll turn <b>Avery's tank</b> into a puffer castle! 🏰</p>
+        <p class="big">It will be home to <b>4 little pea puffers</b>. 🐡</p>
+        <p>We'll pack it with <b>plants and hidey-holes</b> so every puffer gets its own cosy corner and nobody feels squished.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. TEMPERATURE GAME -->
+  <section class="card">
+    <span class="ribbon c-coral"><span class="ico">🌡️</span> Keep the Water Just Right!</span>
+    <p>Puffers like their water <b>cool and comfy</b> — not too hot! Slide the thermometer and watch how the puffer feels. ❄️🔥</p>
+    <div class="temp-wrap">
+      <div class="temp-face">
+        <div class="porthole" id="tempPort" style="border-color:#3ddc97">
+          <img src="images/puffer-face.jpg" alt="A pea puffer">
+          <span class="temp-badge" id="tempBadge">✨</span>
+        </div>
+      </div>
+      <div class="temp-controls">
+        <p class="tempnum" id="tempNum">26°C</p>
+        <p class="tempmsg" id="tempMsg" style="color:#1f9e63">Ahhh, perfect! So comfy! 😊</p>
+        <input type="range" min="0" max="100" value="50" class="temp" id="tempSlider" aria-label="water temperature">
+        <div class="scale"><span>❄️ Chilly</span><span>😊 Just right</span><span>🔥 Too hot</span></div>
+        <div class="grownup">👩‍👧 <b>For grown-ups:</b> Singapore rooms get warm (28–31°C). Puffers want <b>≤28°C</b>, so keep a fan or a cool/air-con spot for the tank.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FEEDING GAME -->
+  <section class="card">
+    <span class="ribbon c-mint"><span class="ico">🍴</span> Yummy Puffer Snacks</span>
+    <div class="grid">
+      <div class="col">
+        <p>Pea puffers are little hunters! They love <b>real, wiggly, crunchy</b> food. Their #1 favourite is <b>tiny snails</b>. 🐌</p>
+        <p class="big">But they say <b>"yuck!"</b> to dry fish flakes. Tap each food and see! 👇</p>
+      </div>
+      <div class="col">
+        <div class="photo"><img src="images/snail.jpg" alt="Two little ramshorn snails, a puffer's favourite snack"></div>
+        <div class="cap">Crunchy snail snacks 🐌</div>
+      </div>
+    </div>
+    <div class="foods" id="foods"></div>
+    <div class="feedback" id="feedback">Tap a food to feed the puffer! 🫧</div>
+  </section>
+
+  <!-- 4b. MINI-GAME: FEED THE PUFFER -->
+  <section class="card">
+    <span class="ribbon c-sun"><span class="ico">🎮</span> Feed the Puffer!</span>
+    <p>Catch the yummy snacks — 🐌 snails, 🪱 bloodworms, 🦐 shrimp — and <b>dodge the junk</b> (🥣🍬🧦)! Move with your <b>finger</b> or the <b>← →</b> arrow keys.</p>
+    <div class="game-hud">
+      <span>⭐ Score: <b id="gScore">0</b></span>
+      <span id="gLives">❤️❤️❤️</span>
+      <span>🏆 Best: <b id="gBest">0</b></span>
+    </div>
+    <div id="game" class="game">
+      <div id="gPuffer" class="g-puffer"><img src="images/puffer-face.jpg" alt="The puffer you control"></div>
+      <div id="gOverlay" class="g-overlay">
+        <div class="g-card">
+          <div id="gTitle" class="g-title">Feed the Puffer! 🐡</div>
+          <div id="gMsg" class="g-msg">Catch the snacks, dodge the junk. Ready?</div>
+          <button id="gStart" class="g-btn">▶ Start</button>
+        </div>
+      </div>
+    </div>
+    <div class="cap">Tip: 🐌 snails are worth the most points!</div>
+  </section>
+
+  <!-- 5. PLANTS -->
+  <section class="card">
+    <span class="ribbon c-grape"><span class="ico">🌿</span> A Jungle to Explore</span>
+    <div class="grid">
+      <div class="col">
+        <div class="photo"><img src="images/planted-nano.jpg" alt="A planted aquarium with driftwood and green plants"></div>
+        <div class="cap">Lots of leafy hidey-holes 🌱</div>
+      </div>
+      <div class="col">
+        <p>We fill the tank with <b>lots of plants</b>, wood, and secret hiding spots.</p>
+        <p>Plants make the puffers feel safe and happy — and give each friend their own little corner so nobody gets grumpy. 💚</p>
+        <div class="photo" style="margin-top:14px"><img src="images/puffer-group.jpg" alt="Several pea puffers swimming together"></div>
+        <div class="cap">Happy puffer friends together 🐡🐡🐡🐡</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. GENTLE -->
+  <section class="card">
+    <span class="ribbon c-sun"><span class="ico">💙</span> Be Gentle &amp; Patient</span>
+    <p class="big">New puffers need our kindness! 🫶</p>
+    <div class="factbubbles">
+      <span class="fb">🛏️ Give new puffers a quiet little room first, so they get strong and healthy</span>
+    </div>
+    <div class="factbubbles">
+      <span class="fb">🥰 Pick a happy puffer with a nice <b>round tummy</b> — not a skinny, sad one</span>
+    </div>
+    <div class="factbubbles">
+      <span class="fb">🐢 Go slow and gentle. Good things take time!</span>
+    </div>
+  </section>
+
+  <!-- 7. CHECKLIST -->
+  <section class="card">
+    <span class="ribbon c-pink"><span class="ico">✅</span> Avery's Magic Checklist</span>
+    <p>Tap each star when it's done. Fill the rainbow meter to finish the puffer castle! 🌈</p>
+    <div class="meter"><i id="meterFill"></i></div>
+    <div class="meterlabel" id="meterLabel">0 of 8 done</div>
+    <ul class="check" id="checklist"></ul>
+    <div class="celebrate" id="celebrate"></div>
+  </section>
+
+</div>
+
+<footer>
+  <p class="heart">💙</p>
+  <p>Made with love for <b>Avery</b> &amp; her future pea puffers.</p>
+  <p style="font-size:.86rem;opacity:.85">Pea puffer &amp; snail photos from kind photographers — see <a href="CREDITS.md">photo credits</a>. Tank photos are Avery's own. 🐠<br>
+  Grown-up notes (in the vault): <a href="../vault/%F0%9F%90%A0%20Aquarium%20Home.md">current tank</a> &amp; <a href="../vault/Pea%20Puffer%20Tank/%F0%9F%90%A1%20Pea%20Puffer%20Home.md">pea puffer plan</a> 🐡</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var actx=null;
+  function sound(kind){
+    try{
+      if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+      if(actx.state==='suspended'){ actx.resume(); }
+      var notes = kind==='yum' ? [520,780] : kind==='yuck' ? [240,150] : kind==='star' ? [660,990] : [600];
+      notes.forEach(function(f,i){
+        var o=actx.createOscillator(), g=actx.createGain();
+        o.type = kind==='yuck' ? 'sawtooth' : 'triangle';
+        o.frequency.value=f; o.connect(g); g.connect(actx.destination);
+        var t=actx.currentTime + i*0.09;
+        g.gain.setValueAtTime(0.0001,t);
+        g.gain.exponentialRampToValueAtTime(0.18,t+0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001,t+0.16);
+        o.start(t); o.stop(t+0.18);
+      });
+    }catch(e){}
+  }
+
+  // ---- sparkles ----
+  var SPK=['✨','⭐','🌟','💫','🫧','🌈'];
+  var layer=document.getElementById('sparkle-layer');
+  function sparkle(x,y,n){
+    n=n||12;
+    for(var i=0;i<n;i++){
+      var s=document.createElement('span');
+      s.className='spark'; s.textContent=SPK[(Math.random()*SPK.length)|0];
+      var ang=Math.random()*Math.PI*2, dist=40+Math.random()*90;
+      s.style.left=x+'px'; s.style.top=y+'px';
+      s.style.setProperty('--dx',(Math.cos(ang)*dist).toFixed(0)+'px');
+      s.style.setProperty('--dy',(Math.sin(ang)*dist - 30).toFixed(0)+'px');
+      s.style.setProperty('--dr',((Math.random()*180-90)|0)+'deg');
+      s.style.fontSize=(14+Math.random()*16).toFixed(0)+'px';
+      layer.appendChild(s);
+      s.addEventListener('animationend',function(){this.remove();});
+    }
+  }
+  function sparkleAt(el,n){
+    var r=el.getBoundingClientRect();
+    sparkle(r.left+r.width/2, r.top+r.height/2, n);
+  }
+
+  // ---- bubbles ----
+  var bc=document.getElementById('bubbles');
+  for(var i=0;i<26;i++){
+    var b=document.createElement('div'); b.className='bubble';
+    var size=8+Math.random()*34;
+    b.style.width=size+'px'; b.style.height=size+'px';
+    b.style.left=(Math.random()*100)+'vw';
+    b.style.animationDuration=(9+Math.random()*12)+'s';
+    b.style.animationDelay=(-Math.random()*16)+'s';
+    bc.appendChild(b);
+  }
+
+  // ---- hero puffer facts ----
+  var facts=[
+    "I'm only as big as your thumbnail! 🤏",
+    "My real name is the Pea Puffer — because I'm pea-sized! 🟢",
+    "I can move each eye on its own. Wiggle wiggle! 👀",
+    "I come from rivers far, far away in India. 🌏",
+    "I LOVE hunting tiny snails. Crunch crunch! 🐌",
+    "I have a big personality in a teeny body! ✨",
+    "Keep my water cool and I'll be super happy! 🌡️",
+    "Blub blub! Thanks for making me a home, Avery! 💙"
+  ];
+  var fi=0, hero=document.getElementById('heroPuffer'), hs=document.getElementById('heroSpeech');
+  function heroTap(){
+    fi=(fi+1)%facts.length; hs.textContent=facts[fi];
+    hero.classList.remove('wiggle'); void hero.offsetWidth; hero.classList.add('wiggle');
+    sparkleAt(hero,14); sound('sparkle');
+  }
+  hero.addEventListener('click',heroTap);
+  hero.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); heroTap(); } });
+
+  // ---- temperature ----
+  var slider=document.getElementById('tempSlider'),
+      port=document.getElementById('tempPort'),
+      badge=document.getElementById('tempBadge'),
+      tnum=document.getElementById('tempNum'),
+      tmsg=document.getElementById('tempMsg');
+  function setTemp(){
+    var v=+slider.value, temp=Math.round(18 + v/100*16); // 18..34
+    tnum.textContent=temp+'°C';
+    var col,msg,emo,mc;
+    if(temp<=22){col='#5ec6ff';emo='❄️';mc='#1273b8';msg="Brrr! A little bit chilly. 🥶";}
+    else if(temp<=28){col='#3ddc97';emo='✨';mc='#1f9e63';msg="Ahhh, perfect! So comfy! 😊";}
+    else if(temp<=30){col='#ffb24d';emo='💦';mc='#c77a10';msg="Getting too warm… 😟";}
+    else {col='#ff5a5a';emo='🥵';mc='#d23a3a';msg="Phew! Too HOT! Puffers can't breathe well in hot water! 🔥";}
+    port.style.borderColor=col; port.style.boxShadow='0 0 0 8px '+col+'44,0 16px 30px rgba(0,0,0,.3)';
+    badge.textContent=emo; tmsg.textContent=msg; tmsg.style.color=mc;
+  }
+  slider.addEventListener('input',setTemp);
+  var lastHappy=true;
+  slider.addEventListener('change',function(){
+    var temp=Math.round(18 + (+slider.value)/100*16);
+    if(temp>22&&temp<=28){ sparkleAt(port,14); sound('sparkle'); }
+  });
+  setTemp();
+
+  // ---- feeding ----
+  var FOODS=[
+    {e:'🐌',n:'Snails',good:true,msg:"YUM! Crunchy snails are my favourite! 😋"},
+    {e:'🪱',n:'Bloodworms',good:true,msg:"Wiggly bloodworms — so tasty! 😋"},
+    {e:'🦐',n:'Tiny shrimp',good:true,msg:"Yummy little shrimp! 😋"},
+    {e:'🥣',n:'Dry flakes',good:false,msg:"Yuck! Puffers don't eat flakes. Bleh! 😝"}
+  ];
+  var foodsEl=document.getElementById('foods'), fbk=document.getElementById('feedback');
+  FOODS.forEach(function(f){
+    var btn=document.createElement('button');
+    btn.className='food'; btn.innerHTML='<span class="e">'+f.e+'</span><span class="n">'+f.n+'</span>';
+    btn.addEventListener('click',function(){
+      fbk.textContent=f.msg;
+      fbk.style.color=f.good?'#1f9e63':'#d23a3a';
+      if(f.good){ sparkleAt(btn,12); sound('yum'); }
+      else { btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake'); sound('yuck'); }
+    });
+    foodsEl.appendChild(btn);
+  });
+
+  // ---- checklist (saves progress) ----
+  var ITEMS=[
+    {id:'rehome',em:'🏡',t:'Find the GloFish a happy new home'},
+    {id:'plants',em:'🌿',t:'Fill it with plants and secret hidey-holes'},
+    {id:'cool',em:'🌡️',t:'Keep the water nice and cool'},
+    {id:'snails',em:'🐌',t:'Start a snail snack farm'},
+    {id:'wait',em:'⏳',t:"Wait for the water to become 'just right'"},
+    {id:'choose',em:'🐡',t:'Choose happy puffers with round little tummies'},
+    {id:'quiet',em:'💤',t:'Give new puffers a quiet room to get strong'},
+    {id:'welcome',em:'🎉',t:'Welcome them home and feed yummy snacks!'}
+  ];
+  var KEY='avery-puffer-checklist', done={};
+  try{ done=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ done={}; }
+  var listEl=document.getElementById('checklist'),
+      fill=document.getElementById('meterFill'),
+      label=document.getElementById('meterLabel'),
+      celeb=document.getElementById('celebrate');
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(done)); }catch(e){} }
+  function refresh(justFinished){
+    var c=0; ITEMS.forEach(function(it){ if(done[it.id]) c++; });
+    fill.style.width=(c/ITEMS.length*100)+'%';
+    label.textContent=c+' of '+ITEMS.length+' done';
+    if(c===ITEMS.length){
+      celeb.textContent='🎉 Hooray, Avery! Your puffer castle is ready! 🎉';
+      if(justFinished){ partyTime(); }
+    } else { celeb.textContent=''; }
+  }
+  function partyTime(){
+    sound('star');
+    var n=0, iv=setInterval(function(){
+      sparkle(Math.random()*window.innerWidth, Math.random()*window.innerHeight*0.7+40, 10);
+      if(++n>=8) clearInterval(iv);
+    },120);
+  }
+  ITEMS.forEach(function(it){
+    var li=document.createElement('li');
+    li.tabIndex=0; li.setAttribute('role','button');
+    if(done[it.id]) li.className='done';
+    li.setAttribute('aria-pressed', done[it.id]?'true':'false');
+    li.innerHTML='<span class="star">⭐</span><span class="em">'+it.em+'</span><span class="txt">'+it.t+'</span>';
+    function toggle(){
+      done[it.id]=!done[it.id];
+      li.classList.toggle('done',done[it.id]);
+      li.setAttribute('aria-pressed', done[it.id]?'true':'false');
+      if(done[it.id]){ sparkleAt(li,10); sound('star'); }
+      save(); refresh(done[it.id]);
+    }
+    li.addEventListener('click',toggle);
+    li.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+    listEl.appendChild(li);
+  });
+  refresh(false);
+
+  // ---- mini-game: Feed the Puffer (catch) ----
+  (function(){
+    var game=document.getElementById('game');
+    if(!game) return;
+    var puffer=document.getElementById('gPuffer'),
+        overlay=document.getElementById('gOverlay'), startBtn=document.getElementById('gStart'),
+        gTitle=document.getElementById('gTitle'), gMsg=document.getElementById('gMsg'),
+        sScore=document.getElementById('gScore'), sLives=document.getElementById('gLives'),
+        sBest=document.getElementById('gBest');
+    var BEST_KEY='avery-puffer-game-best', best=0;
+    try{ best=+localStorage.getItem(BEST_KEY)||0; }catch(e){}
+    sBest.textContent=best;
+    var GOOD=['🐌','🪱','🦐'], BAD=['🥣','🍬','🧦'];
+    var foods=[], running=false, score=0, lives=3, px=0.5, raf=0, lastT=0, spawnT=0;
+
+    function setPuffer(){ puffer.style.left=(px*100)+'%'; }
+    function livesStr(){ return '❤️'.repeat(lives)+'🤍'.repeat(3-lives); }
+    function pointer(e){
+      if(!running) return;
+      var r=game.getBoundingClientRect();
+      var cx=(e.touches&&e.touches[0]?e.touches[0].clientX:e.clientX)-r.left;
+      px=Math.max(0.07,Math.min(0.93,cx/r.width)); setPuffer();
+    }
+    game.addEventListener('mousemove',pointer);
+    game.addEventListener('touchmove',function(e){ if(!running) return; pointer(e); e.preventDefault(); },{passive:false});
+    document.addEventListener('keydown',function(e){
+      if(!running) return;
+      if(e.key==='ArrowLeft'){ px=Math.max(0.07,px-0.09); setPuffer(); e.preventDefault(); }
+      else if(e.key==='ArrowRight'){ px=Math.min(0.93,px+0.09); setPuffer(); e.preventDefault(); }
+    });
+    function spawn(){
+      var bad=Math.random()<0.30;
+      var emoji=bad?BAD[(Math.random()*BAD.length)|0]:GOOD[(Math.random()*GOOD.length)|0];
+      var el=document.createElement('div'); el.className='g-food'; el.textContent=emoji;
+      var x=0.10+Math.random()*0.80;
+      el.style.left=(x*100)+'%'; el.style.top='-10%'; el.style.transform='translateX(-50%)';
+      game.appendChild(el);
+      foods.push({el:el,x:x,y:-0.10,bad:bad,emoji:emoji});
+    }
+    function loop(t){
+      if(!running) return;
+      if(!lastT) lastT=t;
+      var dt=Math.min(0.05,(t-lastT)/1000); lastT=t;
+      spawnT-=dt; if(spawnT<=0){ spawn(); spawnT=0.9-Math.min(0.55,score*0.008); }
+      var speed=0.32+Math.min(0.55,score*0.010);
+      var r=game.getBoundingClientRect();
+      for(var i=foods.length-1;i>=0;i--){
+        var f=foods[i]; f.y+=speed*dt; f.el.style.top=(f.y*100)+'%';
+        if(f.y>=0.80 && f.y<=0.96 && Math.abs(f.x-px)<0.13){
+          if(f.bad){
+            lives--; sLives.textContent=livesStr();
+            game.classList.remove('shake'); void game.offsetWidth; game.classList.add('shake'); sound('yuck');
+            f.el.remove(); foods.splice(i,1);
+            if(lives<=0){ return gameOver(); }
+            continue;
+          }
+          score+=(f.emoji==='🐌'?3:1); sScore.textContent=score;
+          sparkle(r.left+f.x*r.width, r.top+f.y*r.height, 8); sound('yum');
+          f.el.remove(); foods.splice(i,1); continue;
+        }
+        if(f.y>1.08){ f.el.remove(); foods.splice(i,1); }
+      }
+      raf=requestAnimationFrame(loop);
+    }
+    function start(){
+      foods.forEach(function(f){ f.el.remove(); }); foods=[];
+      score=0; lives=3; px=0.5; spawnT=0; lastT=0;
+      sScore.textContent=0; sLives.textContent=livesStr(); setPuffer();
+      overlay.classList.add('hide'); running=true; raf=requestAnimationFrame(loop);
+    }
+    function gameOver(){
+      running=false; cancelAnimationFrame(raf);
+      var hi=score>best;
+      if(hi){ best=score; try{ localStorage.setItem(BEST_KEY,best); }catch(e){} sBest.textContent=best; }
+      gTitle.textContent = hi?'🏆 New best!':'Game Over!';
+      gMsg.innerHTML = 'You fed the puffer <b>'+score+'</b> snack'+(score===1?'':'s')+'! '+(hi?'Amazing, Avery! 🎉':'Play again? 🐡');
+      startBtn.textContent='▶ Play again';
+      overlay.classList.remove('hide');
+      if(hi){ sound('star'); var n=0,iv=setInterval(function(){ sparkle(Math.random()*window.innerWidth, Math.random()*window.innerHeight*0.6+40, 8); if(++n>6) clearInterval(iv); },110); }
+    }
+    startBtn.addEventListener('click',start);
+    setPuffer();
+  })();
+})();
+</script>
+</body>
+</html>
